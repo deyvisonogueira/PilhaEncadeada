@@ -1,103 +1,114 @@
 #include <stdio.h>
-#include <stlib.d>
-
-typedef struct {
-	char site[40],
-	data[40];	
-}tdado;
-
-typedef struct{
-	tdado dado;
-	struct no *prox;//capaz de apontar para outro nó
-}tno;
-
-typedef struct{
-	tno *topo;
-}tpilha;
-
-//-----------------
+#include <stdlib.h>
+ 
+ typedef struct{
+ 	char site[40],data[40];
+ }tdado;
+ typedef struct no{
+ 	tdado dado;
+ 	struct no *prox;
+ }tno;
+ typedef struct{
+ 	tno *topo;
+ }tpilha;
+ 
+//-------------------------
 void inicializa(tpilha *p){
 	p->topo = NULL;
 }
-//-----------------
-int push(tpilha *p, tdadp x){
+//--------------------------
+int push(tpilha *p, tdado x){
 	tno *novo;
-	novo = malloc(sizeoff(tno));
-	if(novo == NULL) //erro ao alocar 
+	novo = malloc(sizeof(tno));
+	if(novo == NULL) // erro ao alocar
+		return 0;
 	novo->prox = p->topo;
-	novo->dado = x;
+	novo->dado = x; 
 	p->topo = novo;
 	return 1;
 }
-//-----------------
-tdado pop(p.pilha *p){
+//--------------------------
+tdado pop(tpilha *p){
 	tno *aux;
-	aux = p->topo;//aux para liberar a memória
+	aux = p->topo; // aux para liberar a mem
 	p->topo = p->topo->prox;
-	tdado x = aux->dado;//guardando o dado para devolver para o usuário
-	free(aux);//libera a memória
-	return x;	
+	tdado x = aux->dado; // guardando o dado para devolver para o usuario
+    free(aux);
+	return x;
 }
-//-----------------
+//-----------------------------
 int isEmpty(tpilha p){
 	return p.topo == NULL?1:0;
-	/*if(p.toppo == NULL)
-	     return 1;
-	  else
-	     return 0; */	
+	// if(p.topo==NULL)
+	//   return 1;
+	//else
+	//    return 0;
 }
-//-----------------
-void mostra(tpilha p){
-	while (p.topo != NULL){
+//---------------------------
+void mostraPilha(tpilha p){
+	while(p.topo!=NULL){
 		printf("%s | %s ->",p.topo->dado.site,
-		                    p.topo->dado.data);
-		p.topo = p.topo->prox;
-	}	                
-	}//Fim while
+							p.topo->dado.data);
+		p.topo = p.topo->prox;					
+	}// fim while
 	printf("\n");
 }
-//------------------------
+//-------------------------------------
+tdado peek (tpilha p){
+	return p.topo -> dado;
+}
+//---------
 int menu(){
 	int op;
-	printf("*** Estrutura de Dados I - Fila Estatica ****\n");
-	printf("1-Enqueue (Inserir)\n");
-	printf("2-Dequeue (Remover)\n");
-	printf("3-Inicio e Fim\n");
+	printf("*** Estrutura de Dados I - Pilha Encadeada ****\n");
+	printf("1-Push (Inserir)\n");
+	printf("2-Pop (Remover)\n");
+	printf("3-Top (Olhar Topo)\n");
 	printf("0-Sair\n");
 	scanf("%d",&op);
 	return op;
 }
-//------------------------
+//------------------
 int main(){
-	tfila f1;
+	tpilha p1;
 	tdado x;
 	int op;
-	inicializa(&f1);
+	inicializa(&p1);
 	do{
-		printf("Inicio[%d] | Fim[%d]\n",f1.ini,f1.fim);
-		
-		mostra(f1);
+		mostraPilha(p1);
+		printf("Topo:%d\n",p1.topo); // ver valor topo
 		op = menu();
 		switch(op){
-			case 1: printf("Entre com o nome e idade:");
-					fflush(stdin);
-					gets(x.nome);
-					scanf("%d",&x.idade);
-					if(   enqueue(&f1,x) ==1 )  
-					  printf("Dado inserido :)\n");
+			case 1: printf("Dado para inserir[Site Data]:");
+			fflush(stdin);
+					gets(x.site);
+			fflush(stdin);
+					gets(x.data);
+					if(   push(&p1,x) ==1 )  
+					  printf("Site %s acessado :)\n", x.site);
 					else
-					  printf("Vagas esgotadas :(\n"); 
+					  printf("Stack overflow :(\n"); 
 			break;
-			case 2: if(!isEmpty(f1)) {
-				       x = dequeue(&f1); 
-			 		   printf("Dado removido:%s:%d\n",x.nome,x.idade);
+			case 2: if(!isEmpty(p1)) {
+				       x = pop(&p1); 
+				       if(!isEmpty(p1)) 
+			 		   printf("Saindo de %s, voltando para o site %s\n",
+								x.site, peek(p1).site);
+								else
+								printf("Saindo de %s, historico vazio\n",
+								x.site);
 				     }// fim if vazio
 				     else
-				       printf("Queue empty :(\n");
+				       printf("Stack empty :(\n");
 				break;
-			case 3:
+			case 3:if(!isEmpty(p1)) {
+				       x = peek(p1); 
+			 		   printf("Topo do historico: %s\n :(\n",x.site);
+				     }// fim if vazio
+				     else
+				       printf("Stack empty :(\n");
 			 break;	
-			case 0: printf("Saindo ....\n");	    
+			case 0: printf("Saindo .... ;)\n");	    
 		}// fim switch
 	    getch(); // system("pause");
 	    system("cls");
